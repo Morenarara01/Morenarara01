@@ -11,6 +11,7 @@ margin:0;
 padding:0;
 box-sizing:border-box;
 font-family:Arial,sans-serif;
+-webkit-tap-highlight-color: transparent;
 }
 
 body{
@@ -250,6 +251,7 @@ border-radius: 8px;
 width: 100%;
 height: 290px;
 cursor: pointer;
+touch-action: manipulation;
 }
 
 @media (max-width: 1024px) {
@@ -271,7 +273,7 @@ body {
 <!-- Efeito Matrix Rosa -->
 <canvas id="bg"></canvas>
 
-<!-- Player Nativo com o seu novo arquivo MP3 -->
+<!-- Player Nativo com a sua música nova -->
 <audio id="meu-audio" src="24 de julho de 2026 - Br mods (youtube).mp3"></audio>
 
 <div class="main-container">
@@ -305,7 +307,7 @@ body {
         </div>
     </div>
 
-    <!-- Jogo do Dinossauro -->
+    <!-- Jogo do Dinossauro Corrigido -->
     <div class="game-card">
         <div class="game-header">🦖 Jogo do Dinossauro</div>
         <canvas id="dino-canvas" width="260" height="280"></canvas>
@@ -366,7 +368,7 @@ function toggleAudio() {
     }
 }
 
-// Lógica do Jogo do Dinossauro
+// Lógica do Jogo do Dinossauro (100% Corrigido)
 const dCanvas = document.getElementById("dino-canvas");
 const dCtx = dCanvas.getContext("2d");
 
@@ -376,7 +378,9 @@ let score = 0;
 let gameOver = false;
 let gameStarted = false;
 
-function acaoJogar() {
+function acaoJogar(e) {
+    if (e) e.preventDefault();
+
     if (gameOver) {
         dino.y = 200;
         dino.vy = 0;
@@ -397,10 +401,9 @@ function acaoJogar() {
     }
 }
 
+// Eventos de clique, toque instantâneo e barra de espaço otimizados
 dCanvas.addEventListener('click', acaoJogar);
-dCanvas.addEventListener('touchstart', (e) => {
-    acaoJogar();
-});
+dCanvas.addEventListener('touchstart', acaoJogar, { passive: false });
 
 window.addEventListener('keydown', (e) => {
     if (document.activeElement.tagName === 'INPUT') return;
@@ -429,6 +432,7 @@ function atualizarDino() {
         cacto.speed += 0.15;
     }
 
+    // Colisão precisa
     if (
         dino.x < cacto.x + cacto.width &&
         dino.x + dino.width > cacto.x &&
@@ -443,6 +447,7 @@ function desenharDino() {
     dCtx.fillStyle = "#000";
     dCtx.fillRect(0, 0, dCanvas.width, dCanvas.height);
 
+    // Chão rosa neon
     dCtx.strokeStyle = "#FF1493";
     dCtx.lineWidth = 2;
     dCtx.beginPath();
@@ -450,12 +455,15 @@ function desenharDino() {
     dCtx.lineTo(260, 230);
     dCtx.stroke();
 
+    // Dinossauro
     dCtx.fillStyle = "#FF1493";
     dCtx.fillRect(dino.x, dino.y, dino.width, dino.height);
 
+    // Cacto
     dCtx.fillStyle = "#FF69B4";
     dCtx.fillRect(cacto.x, cacto.y, cacto.width, cacto.height);
 
+    // Placar
     dCtx.fillStyle = "#fff";
     dCtx.font = "14px Arial";
     dCtx.fillText("Pontos: " + score, 170, 25);
