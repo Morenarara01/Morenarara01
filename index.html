@@ -12,6 +12,9 @@ padding:0;
 box-sizing:border-box;
 font-family:Arial,sans-serif;
 -webkit-tap-highlight-color: transparent;
+-webkit-touch-callout: none; /* Impede menu de segurar a tela no celular */
+-webkit-user-select: none;
+user-select: none;
 }
 
 body{
@@ -251,6 +254,7 @@ border-radius: 8px;
 width: 100%;
 height: 290px;
 cursor: pointer;
+touch-action: manipulation; /* Evita zoom e atraso no toque do celular */
 }
 
 @media (max-width: 1024px) {
@@ -309,7 +313,7 @@ body {
     <!-- Jogo do Dinossauro -->
     <div class="game-card">
         <div class="game-header">🦖 Jogo do Dinossauro</div>
-        <canvas id="dino-canvas" width="260" height="280" onclick="pularDino()"></canvas>
+        <canvas id="dino-canvas" width="260" height="280"></canvas>
     </div>
 </div>
 
@@ -377,7 +381,9 @@ let score = 0;
 let gameOver = false;
 let gameStarted = false;
 
-function pularDino() {
+function pularDino(e) {
+    if (e) e.preventDefault();
+
     if (gameOver) {
         dino.y = 200;
         dino.vy = 0;
@@ -397,6 +403,10 @@ function pularDino() {
         dino.grounded = false;
     }
 }
+
+// Vincula o toque instantâneo e o clique do mouse diretamente no canvas
+dCanvas.addEventListener('touchstart', pularDino, { passive: false });
+dCanvas.addEventListener('mousedown', pularDino);
 
 function atualizarDino() {
     if (!gameStarted || gameOver) return;
