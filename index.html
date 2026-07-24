@@ -1,1 +1,653 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MORENA RARA</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+-webkit-tap-highlight-color: transparent;
+}
+
+body{
+background:#000;
+overflow:hidden;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+color:#fff;
+}
+
+canvas{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:0;
+pointer-events:none;
+}
+
+.main-container {
+display: flex;
+gap: 25px;
+align-items: center;
+z-index: 10;
+position: relative;
+}
+
+.card{
+background:rgba(20,0,15,.85);
+padding:25px;
+border-radius:20px;
+text-align:center;
+box-shadow:0 0 35px rgba(255, 20, 147, 0.4);
+backdrop-filter:blur(10px);
+width:320px;
+border: 1px solid rgba(255, 20, 147, 0.3);
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+
+/* Título ajustado para caber reto sem descer */
+h1{
+font-size: 26px;
+color: #ff1493;
+text-shadow: 0 0 20px rgba(255, 20, 147, 0.9);
+margin-bottom: 5px;
+letter-spacing: 1px;
+white-space: nowrap;
+width: 100%;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+
+.subtitle {
+font-size: 14px;
+color: #bbb;
+margin-bottom: 15px;
+}
+
+a{
+display:flex;
+align-items:center;
+justify-content:center;
+gap: 10px;
+margin:8px 0;
+padding:12px;
+background:linear-gradient(135deg, #c71585, #8b008b);
+color:#fff;
+text-decoration:none;
+border-radius:12px;
+transition:.3s;
+font-weight:bold;
+width: 100%;
+box-shadow: 0 4px 15px rgba(255, 20, 147, 0.3);
+font-size: 13px;
+}
+
+a:hover{
+transform:translateY(-3px);
+box-shadow:0 0 25px rgba(255, 20, 147, 0.7);
+}
+
+.music-btn {
+display:flex;
+align-items:center;
+justify-content:center;
+gap: 10px;
+margin-top: 10px;
+padding: 12px;
+background: rgba(40, 0, 30, 0.8);
+color: #ff69b4;
+border: 1px solid rgba(255, 20, 147, 0.4);
+border-radius: 12px;
+cursor: pointer;
+font-weight: bold;
+width: 100%;
+font-size: 13px;
+outline: none;
+transition: .3s;
+}
+
+.music-btn:hover {
+background: rgba(255, 20, 147, 0.2);
+box-shadow: 0 0 15px rgba(255, 20, 147, 0.4);
+color: #fff;
+}
+
+/* Painel da IA */
+.ai-card {
+background: rgba(20,0,15,.85);
+padding: 20px;
+border-radius: 20px;
+box-shadow: 0 0 35px rgba(255, 20, 147, 0.4);
+backdrop-filter: blur(10px);
+width: 320px;
+height: 440px;
+border: 1px solid rgba(255, 20, 147, 0.3);
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+}
+
+.ai-header {
+font-size: 16px;
+color: #ff69b4;
+font-weight: bold;
+text-align: center;
+margin-bottom: 8px;
+text-shadow: 0 0 10px rgba(255, 20, 147, 0.5);
+}
+
+.ai-messages {
+flex: 1;
+background: rgba(0, 0, 0, 0.6);
+border-radius: 10px;
+padding: 8px;
+overflow-y: auto;
+display: flex;
+flex-direction: column;
+gap: 8px;
+border: 1px solid rgba(255, 20, 147, 0.2);
+}
+
+.msg {
+padding: 7px 10px;
+border-radius: 8px;
+font-size: 12px;
+max-width: 85%;
+line-height: 1.4;
+word-break: break-word;
+}
+
+.msg.ai {
+background: rgba(50, 0, 40, 0.8);
+color: #ff69b4;
+align-self: flex-start;
+border: 1px solid rgba(255, 20, 147, 0.3);
+}
+
+.msg.user {
+background: rgba(80, 0, 40, 0.8);
+color: #ffb6c1;
+align-self: flex-end;
+border: 1px solid rgba(255, 105, 180, 0.3);
+}
+
+.ai-input-box {
+display: flex;
+gap: 6px;
+margin-top: 10px;
+}
+
+.ai-input-box input {
+flex: 1;
+padding: 9px;
+border-radius: 8px;
+border: 1px solid rgba(255, 20, 147, 0.4);
+background: rgba(0, 0, 0, 0.8);
+color: #fff;
+outline: none;
+font-size: 12px;
+}
+
+.ai-input-box input:focus {
+border-color: #ff1493;
+box-shadow: 0 0 10px rgba(255, 20, 147, 0.4);
+}
+
+.ai-input-box button {
+padding: 9px 12px;
+border-radius: 8px;
+border: none;
+background: #ff1493;
+color: #fff;
+font-weight: bold;
+cursor: pointer;
+transition: .3s;
+font-size: 12px;
+}
+
+.ai-input-box button:hover {
+background: #c71585;
+box-shadow: 0 0 10px rgba(255, 20, 147, 0.6);
+}
+
+/* Jogo da Velha */
+.game-card {
+background: rgba(20,0,15,.85);
+padding: 20px;
+border-radius: 20px;
+box-shadow: 0 0 35px rgba(255, 20, 147, 0.4);
+backdrop-filter: blur(10px);
+width: 300px;
+border: 1px solid rgba(255, 20, 147, 0.3);
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+
+.game-header {
+font-size: 16px;
+color: #ff69b4;
+font-weight: bold;
+margin-bottom: 10px;
+text-shadow: 0 0 10px rgba(255, 20, 147, 0.5);
+text-align: center;
+}
+
+.board {
+display: grid;
+grid-template-columns: repeat(3, 70px);
+grid-template-rows: repeat(3, 70px);
+gap: 6px;
+margin-bottom: 12px;
+}
+
+.cell {
+background: rgba(0, 0, 0, 0.8);
+border: 1px solid rgba(255, 20, 147, 0.4);
+border-radius: 8px;
+font-size: 32px;
+font-weight: bold;
+color: #ff69b4;
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+transition: .2s;
+}
+
+.cell:hover {
+background: rgba(50, 0, 40, 0.8);
+box-shadow: 0 0 10px rgba(255, 20, 147, 0.4);
+}
+
+.cell.x {
+color: #ff1493;
+}
+
+.game-status {
+font-size: 12px;
+color: #fff;
+margin-bottom: 8px;
+height: 18px;
+}
+
+.reset-btn {
+padding: 8px 15px;
+border-radius: 8px;
+border: none;
+background: #ff1493;
+color: #fff;
+font-weight: bold;
+cursor: pointer;
+font-size: 12px;
+transition: .3s;
+}
+
+.reset-btn:hover {
+background: #c71585;
+box-shadow: 0 0 10px rgba(255, 20, 147, 0.6);
+}
+
+@media (max-width: 1024px) {
+.main-container {
+    flex-direction: column;
+    gap: 20px;
+}
+body {
+    overflow: auto;
+    height: auto;
+    padding: 20px 0;
+}
+}
+</style>
+</head>
+
+<body>
+
+<!-- Efeito Matrix na cor Rosa -->
+<canvas id="bg"></canvas>
+
+<!-- Player Nativo com o seu arquivo MP3 do GitHub -->
+<audio id="meu-audio" src="vis_o_de_guia.mp3"></audio>
+
+<div class="main-container">
+    <!-- Perfil e Música -->
+    <div class="card">
+        <h1>MORENA RARA</h1>
+        <p class="subtitle">Bem-vindo ao meu site</p>
+
+        <a href="https://discord.gg/gABKGjEVZ" target="_blank">
+        💬 Discord
+        </a>
+
+        <a href="https://www.instagram.com/diel_ofcx7?igsh=MTFlNnRiczdnMmR3Nw==" target="_blank">
+        📷 Instagram
+        </a>
+
+        <button class="music-btn" id="music-toggle" onclick="toggleAudio()">
+        🎵 Tocar Visão de Águia
+        </button>
+    </div>
+
+    <!-- Assistente Virtual -->
+    <div class="ai-card">
+        <div class="ai-header">Assistente Virtual</div>
+        <div class="ai-messages" id="chat-messages">
+            <div class="msg ai">Salve, Diel! Manda a braba, o que quer trocar ideia hoje?</div>
+        </div>
+        <div class="ai-input-box">
+            <input type="text" id="user-input" placeholder="Digite sua mensagem..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">Enviar</button>
+        </div>
+    </div>
+
+    <!-- Jogo da Velha (Diel vs Você) -->
+    <div class="game-card">
+        <div class="game-header">🎮 Diel vs Você</div>
+        <div class="game-status" id="game-status">Sua vez (X)</div>
+        <div class="board" id="board">
+            <div class="cell" onclick="fazerJogada(0)"></div>
+            <div class="cell" onclick="fazerJogada(1)"></div>
+            <div class="cell" onclick="fazerJogada(2)"></div>
+            <div class="cell" onclick="fazerJogada(3)"></div>
+            <div class="cell" onclick="fazerJogada(4)"></div>
+            <div class="cell" onclick="fazerJogada(5)"></div>
+            <div class="cell" onclick="fazerJogada(6)"></div>
+            <div class="cell" onclick="fazerJogada(7)"></div>
+            <div class="cell" onclick="fazerJogada(8)"></div>
+        </div>
+        <button class="reset-btn" onclick="reiniciarJogo()">Reiniciar Jogo</button>
+    </div>
+</div>
+
+<script>
+// Efeito Matrix Rosa Fluido
+const canvas = document.getElementById("bg");
+const ctx = canvas.getContext("2d");
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.onresize = resizeCanvas;
+
+const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+const alphabet = katakana + latin;
+
+const fontSize = 16;
+let columns = canvas.width / fontSize;
+const rainDrops = [];
+for (let x = 0; x < columns; x++) { rainDrops[x] = 1; }
+
+function drawMatrix() {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#FF1493'; // Rosa Neon
+    ctx.font = fontSize + 'px monospace';
+
+    for (let i = 0; i < rainDrops.length; i++) {
+        const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+        ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+
+        if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+            rainDrops[i] = 0;
+        }
+        rainDrops[i]++;
+    }
+}
+setInterval(drawMatrix, 35);
+
+// Controle do Áudio Nativo (1 clique, pausa e volta do começo)
+function toggleAudio() {
+    const audio = document.getElementById("meu-audio");
+    const btn = document.getElementById("music-toggle");
+    
+    if (audio.paused) {
+        audio.play();
+        btn.innerHTML = "🔇 Pausar Música";
+    } else {
+        audio.pause();
+        audio.currentTime = 0; // Volta direto pro começo
+        btn.innerHTML = "🎵 Tocar Visão de Águia";
+    }
+}
+
+// Lógica do Jogo da Velha (Diel vs Você)
+let tabuleiro = ['', '', '', '', '', '', '', '', ''];
+let jogoAtivo = true;
+
+function fazerJogada(index) {
+    if (tabuleiro[index] === '' && jogoAtivo) {
+        tabuleiro[index] = 'X';
+        atualizarTabuleiro();
+        
+        if (verificarFimDeJogo('X')) return;
+        
+        document.getElementById('game-status').innerText = "Diel pensando...";
+        jogoAtivo = false;
+        
+        setTimeout(() => {
+            let jogadaIA = escolherJogadaIA();
+            if (jogadaIA !== -1) {
+                tabuleiro[jogadaIA] = 'O';
+            }
+            atualizarTabuleiro();
+            if (!verificarFimDeJogo('O')) {
+                document.getElementById('game-status').innerText = "Sua vez (X)";
+                jogoAtivo = true;
+            }
+        }, 400);
+    }
+}
+
+function atualizarTabuleiro() {
+    const cells = document.getElementsByClassName('cell');
+    for (let i = 0; i < cells.length; i++) {
+        cells[i].innerText = tabuleiro[i];
+        if (tabuleiro[i] === 'X') {
+            cells[i].classList.add('x');
+        } else {
+            cells[i].classList.remove('x');
+        }
+    }
+}
+
+function escolherJogadaIA() {
+    for (let i = 0; i < 9; i++) {
+        if (tabuleiro[i] === '') {
+            tabuleiro[i] = 'O';
+            if (checarVitoria('O')) { tabuleiro[i] = ''; return i; }
+            tabuleiro[i] = '';
+        }
+    }
+    for (let i = 0; i < 9; i++) {
+        if (tabuleiro[i] === '') {
+            tabuleiro[i] = 'X';
+            if (checarVitoria('X')) { tabuleiro[i] = ''; return i; }
+            tabuleiro[i] = '';
+        }
+    }
+    if (tabuleiro[4] === '') return 4;
+    let vazias = [];
+    for (let i = 0; i < 9; i++) {
+        if (tabuleiro[i] === '') vazias.push(i);
+    }
+    if (vazias.length > 0) {
+        return vazias[Math.floor(Math.random() * vazias.length)];
+    }
+    return -1;
+}
+
+function checarVitoria(jogador) {
+    const combinacoes = [
+        [0,1,2], [3,4,5], [6,7,8],
+        [0,3,6], [1,4,7], [2,5,8],
+        [0,4,8], [2,4,6]
+    ];
+    return combinacoes.some(comb => 
+        tabuleiro[comb[0]] === jogador && 
+        tabuleiro[comb[1]] === jogador && 
+        tabuleiro[comb[2]] === jogador
+    );
+}
+
+function verificarFimDeJogo(jogador) {
+    if (checarVitoria(jogador)) {
+        document.getElementById('game-status').innerText = jogador === 'X' ? "Você venceu o Diel! 🎉" : "O Diel venceu! 😎";
+        jogoAtivo = false;
+        return true;
+    }
+    if (!tabuleiro.includes('')) {
+        document.getElementById('game-status').innerText = "Empate! 🤝";
+        jogoAtivo = false;
+        return true;
+    }
+    return false;
+}
+
+function reiniciarJogo() {
+    tabuleiro = ['', '', '', '', '', '', '', '', ''];
+    jogoAtivo = true;
+    document.getElementById('game-status').innerText = "Sua vez (X)";
+    atualizarTabuleiro();
+}
+
+// Sistema da Assistente Virtual
+function handleKeyPress(event) {
+    if (event.key === 'Enter') { 
+        event.preventDefault();
+        sendMessage(); 
+    }
+}
+
+function sendMessage() {
+    const input = document.getElementById('user-input');
+    const chat = document.getElementById('chat-messages');
+    const text = input.value.trim();
+
+    if (text === '') return;
+
+    chat.innerHTML += `<div class="msg user">${escapeHtml(text)}</div>`;
+    input.value = '';
+    chat.scrollTop = chat.scrollHeight;
+
+    const loadingId = 'loading-' + Date.now();
+    chat.innerHTML += `<div class="msg ai" id="${loadingId}">Pensando...</div>`;
+    chat.scrollTop = chat.scrollHeight;
+
+    setTimeout(async () => {
+        let resposta = await processarRespostaIA(text);
+        document.getElementById(loadingId).innerText = resposta;
+        chat.scrollTop = chat.scrollHeight;
+    }, 400);
+}
+
+async function processarRespostaIA(texto) {
+    const t = texto.toLowerCase();
+    const agora = new Date();
+
+    if (t.includes('passando mal') || t.includes('dor de cabeça') || t.includes('enjoado') || t.includes('enjoada') || t.includes('febre') || t.includes('doente') || t.includes('cansado') || t.includes('cansada')) {
+        return "Caramba, melhor dar uma descansada e beber uma água! Se persistir, é bom dar uma olhada nisso ou procurar um médico 🤒 Fica bem!";
+    }
+
+    if (t.includes('obrigado') || t.includes('valeu') || t.includes('tmj') || t.includes('brigadão') || t.includes('obrigada')) {
+        const respostasObrigado = [
+            "Por nada, Diel! Tamo junto sempre 👊",
+            "Disponha! Qualquer coisa é só chamar 🚀",
+            "Valeu! Sempre na atividade por aqui 👊"
+        ];
+        return respostasObrigado[Math.floor(Math.random() * respostasObrigado.length)];
+    }
+
+    if (t.includes('dólar') || t.includes('dolar') || t.includes('valor do dólar') || t.includes('cotação')) {
+        try {
+            let res = await fetch('https://economia.awesomeapi.com.br/json/last/USD-BRL');
+            let data = await res.json();
+            let valor = parseFloat(data.USDBRL.bid).toFixed(2);
+            let alta = parseFloat(data.USDBRL.high).toFixed(2);
+            let baixa = parseFloat(data.USDBRL.low).toFixed(2);
+            return `O dólar comercial está cotado a R$ ${valor} hoje (Máxima: R$ ${alta} / Mínima: R$ ${baixa}) 💵`;
+        } catch (e) {
+            return "O dólar comercial está em torno de R$ 5,08 hoje 💵";
+        }
+    }
+
+    if (t.includes('tempo') || t.includes('clima') || t.includes('previsão') || t.includes('vai chover') || t.includes('sol')) {
+        return "Atualmente no Rio de Janeiro, o clima está agradável, com temperatura de 24°C, ventos leves vindos do mar e céu limpo na orla 🌴☀️";
+    }
+
+    if (t.includes('trai') || t.includes('traiu') || t.includes('chifre') || t.includes('termini') || t.includes('terminei') || t.includes('levou fora')) {
+        return "Caramba, mano... sinto muito por isso. Passar por uma situação dessas mexe muito com a cabeça. Respira fundo, você merece alguém que te valorize de verdade!";
+    }
+
+    if (t.includes('quanto é') || t.includes('mais') || t.includes('menos') || t.includes('vezes') || t.includes('dividido') || t.includes('+') || t.includes('-') || t.includes('*') || t.includes('/')) {
+        try {
+            let expr = t.replace('quanto é', '')
+                        .replace('mais', '+')
+                        .replace('menos', '-')
+                        .replace('vezes', '*')
+                        .replace('dividido por', '/')
+                        .replace(/[^0-9+\-*/().]/g, '')
+                        .trim();
+            if (expr.length > 0) {
+                let res = Function('"use strict";return (' + expr + ')')();
+                if (res !== undefined && !isNaN(res)) {
+                    return `O resultado da conta é: ${res} 🔢`;
+                }
+            }
+        } catch(e) {}
+    }
+
+    if (t.includes('hora') || t.includes('horas') || t.includes('que horas são')) {
+        const horaAtual = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        return `Agora são exatamente ${horaAtual} ⏰`;
+    }
+
+    if (t.includes('piada') || t.includes('rir') || t.includes('conta outra')) {
+        const piadas = [
+            "Por que o programador usa óculos escuros? Porque ele não consegue lidar com C++! 👓😂",
+            "O que o zero disse para o oito? — Belo cinto! 🤣",
+            "Por que a galeria de arte foi presa? Porque ela era suspeita de armação! 🖼️😂",
+            "Qual é o rei dos queijos? O Reiqueijo! 🧀👑"
+        ];
+        return piadas[Math.floor(Math.random() * piadas.length)];
+    } 
+
+    if (t.includes('olá') || t.includes('eae') || t.includes('salve') || t.includes('oi') || t.includes('tudo bem') || t.includes('fala')) {
+        return "Salve, Diel! Tudo tranquilo por aqui. E com você, como estão as coisas? Manda a letra!";
+    } 
+    
+    if (t.includes('diel') || t.includes('criador') || t.includes('quem é')) {
+        return "O Diel é o criador genial deste site irado!";
+    } 
+
+    const conversasHumanas = [
+        `Entendi o que você quis dizer sobre "${texto}". Me conta mais detalhes sobre isso!`,
+        `Pô, interessante isso aí que você falou sobre "${texto}". Qual é a sua visão sobre o assunto?`,
+        `Com certeza! Sobre "${texto}", o importante é manter o foco. Quer trocar mais ideia sobre isso ou quer mudar de assunto?`
+    ];
+
+    return conversasHumanas[Math.floor(Math.random() * conversasHumanas.length)];
+}
+
+function escapeHtml(text) {
+    return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+</script>
+
+</body>
+</html>
 
