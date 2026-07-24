@@ -271,8 +271,8 @@ body {
 <!-- Efeito Matrix Rosa -->
 <canvas id="bg"></canvas>
 
-<!-- Player Nativo -->
-<audio id="meu-audio" src="vis_o_de_guia.mp3"></audio>
+<!-- Player Nativo com o seu novo arquivo MP3 -->
+<audio id="meu-audio" src="24 de julho de 2026 - Br mods (youtube).mp3"></audio>
 
 <div class="main-container">
     <!-- Perfil e Música -->
@@ -289,7 +289,7 @@ body {
         </a>
 
         <button class="music-btn" id="music-toggle" onclick="toggleAudio()">
-        🎵 Tocar Visão de Águia
+        🎵 Tocar Música
         </button>
     </div>
 
@@ -362,7 +362,7 @@ function toggleAudio() {
     } else {
         audio.pause();
         audio.currentTime = 0;
-        btn.innerHTML = "🎵 Tocar Visão de Águia";
+        btn.innerHTML = "🎵 Tocar Música";
     }
 }
 
@@ -397,16 +397,13 @@ function acaoJogar() {
     }
 }
 
-// Eventos limpos para clique na tela, toque e barra de espaço
 dCanvas.addEventListener('click', acaoJogar);
 dCanvas.addEventListener('touchstart', (e) => {
     acaoJogar();
 });
 
 window.addEventListener('keydown', (e) => {
-    // Se o usuário estiver digitando no chat, não interfere no jogo
     if (document.activeElement.tagName === 'INPUT') return;
-    
     if (e.code === 'Space') {
         e.preventDefault();
         acaoJogar();
@@ -432,7 +429,6 @@ function atualizarDino() {
         cacto.speed += 0.15;
     }
 
-    // Colisão
     if (
         dino.x < cacto.x + cacto.width &&
         dino.x + dino.width > cacto.x &&
@@ -447,7 +443,6 @@ function desenharDino() {
     dCtx.fillStyle = "#000";
     dCtx.fillRect(0, 0, dCanvas.width, dCanvas.height);
 
-    // Chão rosa neon
     dCtx.strokeStyle = "#FF1493";
     dCtx.lineWidth = 2;
     dCtx.beginPath();
@@ -455,15 +450,12 @@ function desenharDino() {
     dCtx.lineTo(260, 230);
     dCtx.stroke();
 
-    // Dinossauro
     dCtx.fillStyle = "#FF1493";
     dCtx.fillRect(dino.x, dino.y, dino.width, dino.height);
 
-    // Cacto
     dCtx.fillStyle = "#FF69B4";
     dCtx.fillRect(cacto.x, cacto.y, cacto.width, cacto.height);
 
-    // Placar
     dCtx.fillStyle = "#fff";
     dCtx.font = "14px Arial";
     dCtx.fillText("Pontos: " + score, 170, 25);
