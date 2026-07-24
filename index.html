@@ -220,7 +220,7 @@ background: #c71585;
 box-shadow: 0 0 10px rgba(255, 20, 147, 0.6);
 }
 
-/* Jogo do Dinossauro */
+/* Jogo da Velha */
 .game-card {
 background: rgba(20,0,15,.85);
 padding: 20px;
@@ -244,14 +244,60 @@ text-shadow: 0 0 10px rgba(255, 20, 147, 0.5);
 text-align: center;
 }
 
-#dino-canvas {
+.board {
+display: grid;
+grid-template-columns: repeat(3, 70px);
+grid-template-rows: repeat(3, 70px);
+gap: 6px;
+margin: 10px 0;
+}
+
+.cell {
 background: rgba(0, 0, 0, 0.8);
 border: 1px solid rgba(255, 20, 147, 0.4);
 border-radius: 8px;
-width: 100%;
-height: 290px;
+font-size: 32px;
+font-weight: bold;
+color: #ff69b4;
+display: flex;
+align-items: center;
+justify-content: center;
 cursor: pointer;
-touch-action: manipulation;
+transition: .2s;
+}
+
+.cell:hover {
+background: rgba(50, 0, 40, 0.8);
+box-shadow: 0 0 10px rgba(255, 20, 147, 0.4);
+}
+
+.cell.x {
+color: #ff1493;
+}
+
+.game-status {
+font-size: 12px;
+color: #fff;
+text-align: center;
+height: 18px;
+}
+
+.reset-btn {
+padding: 8px 15px;
+border-radius: 8px;
+border: none;
+background: #ff1493;
+color: #fff;
+font-weight: bold;
+cursor: pointer;
+font-size: 12px;
+transition: .3s;
+width: 100%;
+}
+
+.reset-btn:hover {
+background: #c71585;
+box-shadow: 0 0 10px rgba(255, 20, 147, 0.6);
 }
 
 @media (max-width: 1024px) {
@@ -273,7 +319,7 @@ body {
 <!-- Efeito Matrix Rosa -->
 <canvas id="bg"></canvas>
 
-<!-- Player Nativo com a sua música nova -->
+<!-- Player Nativo com a música nova -->
 <audio id="meu-audio" src="24 de julho de 2026 - Br mods (youtube).mp3"></audio>
 
 <div class="main-container">
@@ -307,10 +353,22 @@ body {
         </div>
     </div>
 
-    <!-- Jogo do Dinossauro Corrigido -->
+    <!-- Jogo da Velha -->
     <div class="game-card">
-        <div class="game-header">🦖 Jogo do Dinossauro</div>
-        <canvas id="dino-canvas" width="260" height="280"></canvas>
+        <div class="game-header">🎮 Morena Rara vs Você</div>
+        <div class="game-status" id="game-status">Sua vez (X)</div>
+        <div class="board" id="board">
+            <div class="cell" onclick="fazerJogada(0)"></div>
+            <div class="cell" onclick="fazerJogada(1)"></div>
+            <div class="cell" onclick="fazerJogada(2)"></div>
+            <div class="cell" onclick="fazerJogada(3)"></div>
+            <div class="cell" onclick="fazerJogada(4)"></div>
+            <div class="cell" onclick="fazerJogada(5)"></div>
+            <div class="cell" onclick="fazerJogada(6)"></div>
+            <div class="cell" onclick="fazerJogada(7)"></div>
+            <div class="cell" onclick="fazerJogada(8)"></div>
+        </div>
+        <button class="reset-btn" onclick="reiniciarJogo()">Reiniciar Jogo</button>
     </div>
 </div>
 
@@ -368,126 +426,105 @@ function toggleAudio() {
     }
 }
 
-// Lógica do Jogo do Dinossauro (100% Corrigido)
-const dCanvas = document.getElementById("dino-canvas");
-const dCtx = dCanvas.getContext("2d");
+// Lógica do Jogo da Velha
+let tabuleiro = ['', '', '', '', '', '', '', '', ''];
+let jogoAtivo = true;
 
-let dino = { x: 30, y: 200, width: 22, height: 26, vy: 0, gravity: 0.7, jump: -11, grounded: true };
-let cacto = { x: 260, y: 205, width: 16, height: 22, speed: 4.5 };
-let score = 0;
-let gameOver = false;
-let gameStarted = false;
-
-function acaoJogar(e) {
-    if (e) e.preventDefault();
-
-    if (gameOver) {
-        dino.y = 200;
-        dino.vy = 0;
-        dino.grounded = true;
-        cacto.x = 260;
-        cacto.speed = 4.5;
-        score = 0;
-        gameOver = false;
-        gameStarted = true;
-        return;
-    }
-    if (!gameStarted) {
-        gameStarted = true;
-    }
-    if (dino.grounded) {
-        dino.vy = dino.jump;
-        dino.grounded = false;
+function fazerJogada(index) {
+    if (tabuleiro[index] === '' && jogoAtivo) {
+        tabuleiro[index] = 'X';
+        atualizarTabuleiro();
+        
+        if (verificarFimDeJogo('X')) return;
+        
+        document.getElementById('game-status').innerText = "Morena Rara pensando...";
+        jogoAtivo = false;
+        
+        setTimeout(() => {
+            let jogadaIA = escolherJogadaIA();
+            if (jogadaIA !== -1) {
+                tabuleiro[jogadaIA] = 'O';
+            }
+            atualizarTabuleiro();
+            if (!verificarFimDeJogo('O')) {
+                document.getElementById('game-status').innerText = "Sua vez (X)";
+                jogoAtivo = true;
+            }
+        }, 400);
     }
 }
 
-// Eventos de clique, toque instantâneo e barra de espaço otimizados
-dCanvas.addEventListener('click', acaoJogar);
-dCanvas.addEventListener('touchstart', acaoJogar, { passive: false });
-
-window.addEventListener('keydown', (e) => {
-    if (document.activeElement.tagName === 'INPUT') return;
-    if (e.code === 'Space') {
-        e.preventDefault();
-        acaoJogar();
-    }
-});
-
-function atualizarDino() {
-    if (!gameStarted || gameOver) return;
-
-    dino.vy += dino.gravity;
-    dino.y += dino.vy;
-
-    if (dino.y > 200) {
-        dino.y = 200;
-        dino.vy = 0;
-        dino.grounded = true;
-    }
-
-    cacto.x -= cacto.speed;
-    if (cacto.x < -20) {
-        cacto.x = 280 + Math.random() * 50;
-        score += 10;
-        cacto.speed += 0.15;
-    }
-
-    // Colisão precisa
-    if (
-        dino.x < cacto.x + cacto.width &&
-        dino.x + dino.width > cacto.x &&
-        dino.y < cacto.y + cacto.height &&
-        dino.y + dino.height > cacto.y
-    ) {
-        gameOver = true;
+function atualizarTabuleiro() {
+    const cells = document.getElementsByClassName('cell');
+    for (let i = 0; i < cells.length; i++) {
+        cells[i].innerText = tabuleiro[i];
+        if (tabuleiro[i] === 'X') {
+            cells[i].classList.add('x');
+        } else {
+            cells[i].classList.remove('x');
+        }
     }
 }
 
-function desenharDino() {
-    dCtx.fillStyle = "#000";
-    dCtx.fillRect(0, 0, dCanvas.width, dCanvas.height);
-
-    // Chão rosa neon
-    dCtx.strokeStyle = "#FF1493";
-    dCtx.lineWidth = 2;
-    dCtx.beginPath();
-    dCtx.moveTo(0, 230);
-    dCtx.lineTo(260, 230);
-    dCtx.stroke();
-
-    // Dinossauro
-    dCtx.fillStyle = "#FF1493";
-    dCtx.fillRect(dino.x, dino.y, dino.width, dino.height);
-
-    // Cacto
-    dCtx.fillStyle = "#FF69B4";
-    dCtx.fillRect(cacto.x, cacto.y, cacto.width, cacto.height);
-
-    // Placar
-    dCtx.fillStyle = "#fff";
-    dCtx.font = "14px Arial";
-    dCtx.fillText("Pontos: " + score, 170, 25);
-
-    if (!gameStarted) {
-        dCtx.fillStyle = "#ff69b4";
-        dCtx.font = "13px Arial";
-        dCtx.fillText("Toque ou Espaço para iniciar!", 40, 120);
-    } else if (gameOver) {
-        dCtx.fillStyle = "#ff1493";
-        dCtx.font = "bold 18px Arial";
-        dCtx.fillText("GAME OVER OTÁRIO!", 35, 110);
-        dCtx.fillStyle = "#fff";
-        dCtx.font = "12px Arial";
-        dCtx.fillText("Toque ou Espaço para reiniciar", 35, 140);
+function escolherJogadaIA() {
+    for (let i = 0; i < 9; i++) {
+        if (tabuleiro[i] === '') {
+            tabuleiro[i] = 'O';
+            if (checarVitoria('O')) { tabuleiro[i] = ''; return i; }
+            tabuleiro[i] = '';
+        }
     }
+    for (let i = 0; i < 9; i++) {
+        if (tabuleiro[i] === '') {
+            tabuleiro[i] = 'X';
+            if (checarVitoria('X')) { tabuleiro[i] = ''; return i; }
+            tabuleiro[i] = '';
+        }
+    }
+    if (tabuleiro[4] === '') return 4;
+    let vazias = [];
+    for (let i = 0; i < 9; i++) {
+        if (tabuleiro[i] === '') vazias.push(i);
+    }
+    if (vazias.length > 0) {
+        return vazias[Math.floor(Math.random() * vazias.length)];
+    }
+    return -1;
 }
 
-function loopDino() {
-    atualizarDino();
-    desenharDino();
-    requestAnimationFrame(loopDino);
+function checarVitoria(jogador) {
+    const combinacoes = [
+        [0,1,2], [3,4,5], [6,7,8],
+        [0,3,6], [1,4,7], [2,5,8],
+        [0,4,8], [2,4,6]
+    ];
+    return combinacoes.some(comb => 
+        tabuleiro[comb[0]] === jogador && 
+        tabuleiro[comb[1]] === jogador && 
+        tabuleiro[comb[2]] === jogador
+    );
 }
-loopDino();
+
+function verificarFimDeJogo(jogador) {
+    if (checarVitoria(jogador)) {
+        document.getElementById('game-status').innerText = jogador === 'X' ? "Você venceu a Morena Rara! 🎉" : "A Morena Rara venceu! 😎";
+        jogoAtivo = false;
+        return true;
+    }
+    if (!tabuleiro.includes('')) {
+        document.getElementById('game-status').innerText = "Empate! 🤝";
+        jogoAtivo = false;
+        return true;
+    }
+    return false;
+}
+
+function reiniciarJogo() {
+    tabuleiro = ['', '', '', '', '', '', '', '', ''];
+    jogoAtivo = true;
+    document.getElementById('game-status').innerText = "Sua vez (X)";
+    atualizarTabuleiro();
+}
 
 // Sistema da IA
 function handleKeyPress(event) {
