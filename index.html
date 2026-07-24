@@ -249,33 +249,8 @@ background: rgba(0, 0, 0, 0.8);
 border: 1px solid rgba(255, 20, 147, 0.4);
 border-radius: 8px;
 width: 100%;
-height: 250px;
+height: 290px;
 cursor: pointer;
-}
-
-.game-status {
-font-size: 12px;
-color: #fff;
-text-align: center;
-height: 18px;
-}
-
-.reset-btn {
-padding: 8px 15px;
-border-radius: 8px;
-border: none;
-background: #ff1493;
-color: #fff;
-font-weight: bold;
-cursor: pointer;
-font-size: 12px;
-transition: .3s;
-width: 100%;
-}
-
-.reset-btn:hover {
-background: #c71585;
-box-shadow: 0 0 10px rgba(255, 20, 147, 0.6);
 }
 
 @media (max-width: 1024px) {
@@ -334,9 +309,7 @@ body {
     <!-- Jogo do Dinossauro -->
     <div class="game-card">
         <div class="game-header">🦖 Jogo do Dinossauro</div>
-        <div class="game-status" id="dino-status">Toque na tela para pular!</div>
-        <canvas id="dino-canvas" width="260" height="230" onclick="pularDino()"></canvas>
-        <button class="reset-btn" onclick="reiniciarDino()">Reiniciar Jogo</button>
+        <canvas id="dino-canvas" width="260" height="280" onclick="pularDino()"></canvas>
     </div>
 </div>
 
@@ -398,15 +371,22 @@ function toggleAudio() {
 const dCanvas = document.getElementById("dino-canvas");
 const dCtx = dCanvas.getContext("2d");
 
-let dino = { x: 30, y: 160, width: 22, height: 26, vy: 0, gravity: 0.6, jump: -10, grounded: true };
-let cacto = { x: 260, y: 165, width: 15, height: 22, speed: 4 };
+let dino = { x: 30, y: 200, width: 22, height: 26, vy: 0, gravity: 0.7, jump: -11, grounded: true };
+let cacto = { x: 260, y: 205, width: 16, height: 22, speed: 4.5 };
 let score = 0;
 let gameOver = false;
 let gameStarted = false;
 
 function pularDino() {
     if (gameOver) {
-        reiniciarDino();
+        dino.y = 200;
+        dino.vy = 0;
+        dino.grounded = true;
+        cacto.x = 260;
+        cacto.speed = 4.5;
+        score = 0;
+        gameOver = false;
+        gameStarted = true;
         return;
     }
     if (!gameStarted) {
@@ -424,17 +404,17 @@ function atualizarDino() {
     dino.vy += dino.gravity;
     dino.y += dino.vy;
 
-    if (dino.y > 160) {
-        dino.y = 160;
+    if (dino.y > 200) {
+        dino.y = 200;
         dino.vy = 0;
         dino.grounded = true;
     }
 
     cacto.x -= cacto.speed;
     if (cacto.x < -20) {
-        cacto.x = 280 + Math.random() * 40;
+        cacto.x = 280 + Math.random() * 50;
         score += 10;
-        cacto.speed += 0.1; // Vai aumentando a velocidade aos poucos
+        cacto.speed += 0.15;
     }
 
     // Colisão
@@ -445,7 +425,6 @@ function atualizarDino() {
         dino.y + dino.height > cacto.y
     ) {
         gameOver = true;
-        document.getElementById("dino-status").innerText = `Fim de jogo! Pontos: ${score}`;
     }
 }
 
@@ -457,15 +436,15 @@ function desenharDino() {
     dCtx.strokeStyle = "#FF1493";
     dCtx.lineWidth = 2;
     dCtx.beginPath();
-    dCtx.moveTo(0, 192);
-    dCtx.lineTo(260, 192);
+    dCtx.moveTo(0, 230);
+    dCtx.lineTo(260, 230);
     dCtx.stroke();
 
-    // Dinossauro (Bloco Rosa Neon)
+    // Dinossauro
     dCtx.fillStyle = "#FF1493";
     dCtx.fillRect(dino.x, dino.y, dino.width, dino.height);
 
-    // Cacto (Obstáculo Rosa Escuro/Claro)
+    // Cacto
     dCtx.fillStyle = "#FF69B4";
     dCtx.fillRect(cacto.x, cacto.y, cacto.width, cacto.height);
 
@@ -477,7 +456,14 @@ function desenharDino() {
     if (!gameStarted) {
         dCtx.fillStyle = "#ff69b4";
         dCtx.font = "13px Arial";
-        dCtx.fillText("Toque para Começar!", 65, 110);
+        dCtx.fillText("Toque na tela para iniciar!", 55, 120);
+    } else if (gameOver) {
+        dCtx.fillStyle = "#ff1493";
+        dCtx.font = "bold 18px Arial";
+        dCtx.fillText("GAME OVER OTÁRIO!", 35, 110);
+        dCtx.fillStyle = "#fff";
+        dCtx.font = "12px Arial";
+        dCtx.fillText("Toque para reiniciar", 75, 140);
     }
 }
 
@@ -487,18 +473,6 @@ function loopDino() {
     requestAnimationFrame(loopDino);
 }
 loopDino();
-
-function reiniciarDino() {
-    dino.y = 160;
-    dino.vy = 0;
-    dino.grounded = true;
-    cacto.x = 260;
-    cacto.speed = 4;
-    score = 0;
-    gameOver = false;
-    gameStarted = true;
-    document.getElementById("dino-status").innerText = "JOGANDO...";
-}
 
 // Sistema da IA
 function handleKeyPress(event) {
