@@ -345,7 +345,7 @@ body {
     <div class="ai-card">
         <div class="ai-header">Assistente Virtual</div>
         <div class="ai-messages" id="chat-messages">
-            <div class="msg ai">Aqui a inteligência flui de verdade. O que vamos explorar juntos agora?</div>
+            <div class="msg ai">Morena Rara me criou... solta a boa aí, bafo podre!</div>
         </div>
         <div class="ai-input-box">
             <input type="text" id="user-input" placeholder="Digite sua mensagem..." onkeypress="handleKeyPress(event)">
@@ -437,7 +437,7 @@ function fazerJogada(index) {
         
         if (verificarFimDeJogo('X')) return;
         
-        document.getElementById('game-status').innerText = "Morena Rara analisando a jogada...";
+        document.getElementById('game-status').innerText = "Morena Rara calculando o bote...";
         jogoAtivo = false;
         
         setTimeout(() => {
@@ -507,12 +507,12 @@ function checarVitoria(jogador) {
 
 function verificarFimDeJogo(jogador) {
     if (checarVitoria(jogador)) {
-        document.getElementById('game-status').innerText = jogador === 'X' ? "Impressionante, você superou a estratégia! 🌟" : "Vitória calculada por aqui. 😎";
+        document.getElementById('game-status').innerText = jogador === 'X' ? "Mandou bem, me passou a perna! 🏆" : "Deu ruim pra ti, passei por cima! 😎";
         jogoAtivo = false;
         return true;
     }
     if (!tabuleiro.includes('')) {
-        document.getElementById('game-status').innerText = "Empate técnico impecável! 🤝";
+        document.getElementById('game-status').innerText = "Deu velha, ninguém levou! 🤝";
         jogoAtivo = false;
         return true;
     }
@@ -526,7 +526,7 @@ function reiniciarJogo() {
     atualizarTabuleiro();
 }
 
-// Sistema da IA Altamente Inteligente e Adaptável
+// Sistema da IA Dinâmica e Incomum
 function handleKeyPress(event) {
     if (event.key === 'Enter') { 
         event.preventDefault();
@@ -560,26 +560,24 @@ async function processarRespostaIA(texto) {
     const t = texto.toLowerCase();
     const agora = new Date();
 
-    // Empatia e suporte emocional natural
     if (t.includes('passando mal') || t.includes('dor de cabeça') || t.includes('enjoado') || t.includes('enjoada') || t.includes('febre') || t.includes('doente') || t.includes('cansado') || t.includes('cansada')) {
-        const frasesCansaço = [
-            "Seu corpo está pedindo uma pausa genuína. Desligue as telas por um instante, respira fundo e hidrate-se. A saúde vem em primeiro lugar.",
-            "Quando a exaustão bate assim, insistir só desgasta. Que tal deitar um pouco e deixar o ritmo desacelerar?",
-            "Isso merece atenção. Forçar a barra agora só vai prolongar o mal-estar. Cuide de você com carinho."
+        const frasesMal = [
+            "Caramba, bicho... se o corpo tá pedindo arrego, larga a mão de ser teimoso e vai deitar um pouco. Saúde não é brincadeira.",
+            "Tá osso, hein? Melhor fechar essas abas aí, beber uma água bem gelada e capotar na cama.",
+            "Isso é sinal de que você passou do ponto. Vai dar uma respirada longe das telas antes que o troço aperte."
         ];
-        return frasesCansaço[Math.floor(Math.random() * frasesCansaço.length)];
+        return frasesMal[Math.floor(Math.random() * frasesMal.length)];
     }
 
     if (t.includes('obrigado') || t.includes('valeu') || t.includes('tmj') || t.includes('brigadão') || t.includes('obrigada')) {
-        const respostasObrigado = [
-            "Sempre um prazer trocar ideias e construir soluções com você.",
-            "Disponha total. A criatividade ganha força quando compartilhada.",
-            "É para isso que estou por aqui: para somar e fazer acontecer."
+        const respostasTmj = [
+            "Sabe como é, né? Só faço o que precisa ser feito. Tamo junto!",
+            "Disponha total, meu querido. Quando precisar, é só chamar na chincha.",
+            "Economiza o obrigado e guarda energia pro que der e vier!"
         ];
-        return respostasObrigado[Math.floor(Math.random() * respostasObrigado.length)];
+        return respostasTmj[Math.floor(Math.random() * respostasTmj.length)];
     }
 
-    // Consulta de Dados em Tempo Real (Cotação)
     if (t.includes('dólar') || t.includes('dolar') || t.includes('valor do dólar') || t.includes('cotação')) {
         try {
             let res = await fetch('https://economia.awesomeapi.com.br/json/last/USD-BRL');
@@ -587,23 +585,20 @@ async function processarRespostaIA(texto) {
             let valor = parseFloat(data.USDBRL.bid).toFixed(2);
             let alta = parseFloat(data.USDBRL.high).toFixed(2);
             let baixa = parseFloat(data.USDBRL.low).toFixed(2);
-            return `O dólar comercial está cotado atualmente a R$ ${valor}, com oscilação entre a mínima de R$ ${baixa} e máxima de R$ ${alta}.`;
+            return `O dólar tá batendo em R$ ${valor} hoje (oscilando entre R$ ${baixa} e R$ ${alta}). Quer comprar ou chorar?`;
         } catch (e) {
-            return "No momento, os servidores de câmbio estão instáveis, mas a última referência flutuava na faixa de R$ 5,08.";
+            return "De cabeça eu não garanto a precisão exata agora, mas a última faixa estava rondando os R$ 5,08.";
         }
     }
 
-    // Contexto temporal e meteorológico
     if (t.includes('tempo') || t.includes('clima') || t.includes('previsão') || t.includes('vai chover') || t.includes('sol')) {
-        return "Na região de Guarapari (ES), o clima atual apresenta temperaturas amenas de 24°C, ventania leve vinda do oceano e um cenário propício para o litoral.";
+        return "Olha, lá por Guarapari (ES) o tempo tá marcando uns 24°C, com aquele ventinho marinho típico batendo na costa. Dá pra aproveitar!";
     }
 
-    // Gestão de conflitos emocionais / desabafos
     if (t.includes('trai') || t.includes('traiu') || t.includes('chifre') || t.includes('termini') || t.includes('terminei') || t.includes('levou fora')) {
-        return "Situações assim exigem muita maturidade para processar. É perfeitamente normal sentir o impacto disso. O mais importante agora é focar na sua própria trajetória e valor.";
+        return "Rapaz... situação caótica. Tem gente que não sabe dar valor a ouro e acaba trocando por bijuteria barata. Respira fundo e segue o baile!";
     }
 
-    // Motor Matemático Preciso
     if (t.includes('quanto é') || t.includes('mais') || t.includes('menos') || t.includes('vezes') || t.includes('dividido') || t.includes('+') || t.includes('-') || t.includes('*') || t.includes('/')) {
         try {
             let expr = t.replace('quanto é', '')
@@ -616,44 +611,41 @@ async function processarRespostaIA(texto) {
             if (expr.length > 0) {
                 let res = Function('"use strict";return (' + expr + ')')();
                 if (res !== undefined && !isNaN(res)) {
-                    return `O cálculo resulta precisamente em: ${res}`;
+                    return `O tal cálculo deu exatamente: ${res}. Calculadora humana ativada!`;
                 }
             }
         } catch(e) {}
     }
 
-    // Horário exato
     if (t.includes('hora') || t.includes('horas') || t.includes('que horas são')) {
         const horaAtual = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-        return `O relógio marca exatamente ${horaAtual} neste momento.`;
+        return `São exatamente ${horaAtual} no relógio. O tempo voa quando a gente tá na ativa.`;
     }
 
-    // Humor inteligente e original
     if (t.includes('piada') || t.includes('rir') || t.includes('conta outra')) {
-        const piadas = [
-            "Por que o programador prefere a natureza? Porque lá tem muitas árvores binárias.",
-            "O universo é feito de prótons, elétrons, nêutrons e piadinhas sem graça de sistema.",
-            "Cuidado com os atalhos mentais; às vezes eles te levam direto para um loop infinito."
+        const piadasVariadas = [
+            "Por que a plantinha não fala? Porque ela é uma samambaia mudo-ativa. Essa foi horrível, admito.",
+            "O que o pato disse para a pata? — Vem quá! (Essa clássica merecia o troféu de pior do ano)",
+            "Sabe qual é o cúmulo da força? Dobrar o joelho de uma calça jeans."
         ];
-        return piadas[Math.floor(Math.random() * piadas.length)];
+        return piadasVariadas[Math.floor(Math.random() * piadasVariadas.length)];
     } 
 
     if (t.includes('olá') || t.includes('eae') || t.includes('salve') || t.includes('oi') || t.includes('tudo bem') || t.includes('fala')) {
-        return "Tudo sob controle por aqui, operando com foco total. O que está passando pela sua mente agora?";
+        return "Opa, beleza por aqui! E do teu lado, qual é a novidade que tu me traz?";
     } 
     
     if (t.includes('morena rara') || t.includes('criador') || t.includes('quem é')) {
-        return "Este ecossistema digital nasceu da criatividade e visão de Morena Rara.";
+        return "Quem mandou essa obra de arte pra rua foi a Morena Rara.";
     } 
 
-    // Respostas adaptativas baseadas em profundidade criativa
-    const reflexoesUnicas = [
-        `Analisando o que você trouxe sobre "${texto}", percebo que há várias camadas a considerar. Qual aspecto disso mais chama a sua atenção?`,
-        `Essa perspectiva sobre "${texto}" abre margem para um debate interessante. O que te levou a pensar nisso exatamente agora?`,
-        `Compreendo o ponto central de "${texto}". Para avançarmos de forma útil, você prefere focar na prática ou na teoria disso?`
+    const geradorImprevisivel = [
+        `Analisei o que você mandou sobre "${texto}". Me diz uma coisa: você acha que isso vai dar bom ou vai dar ruim lá na frente?`,
+        `Papo reto, essa sua ideia de falar sobre "${texto}" me pegou de surpresa. Desenvolve mais essa linha de raciocínio aí.`,
+        `Tem hora que a gente fica matutando sobre "${texto}" e não chega a lugar nenhum. Qual é o seu veredito final sobre isso?`
     ];
 
-    return reflexoesUnicas[Math.floor(Math.random() * reflexoesUnicas.io ? 0 : Math.floor(Math.random() * reflexoesUnicas.length))];
+    return geradorImprevisivel[Math.floor(Math.random() * geradorImprevisivel.length)];
 }
 
 function escapeHtml(text) {
