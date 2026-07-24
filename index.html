@@ -11,10 +11,6 @@ margin:0;
 padding:0;
 box-sizing:border-box;
 font-family:Arial,sans-serif;
--webkit-tap-highlight-color: transparent;
--webkit-touch-callout: none; /* Impede menu de segurar a tela no celular */
--webkit-user-select: none;
-user-select: none;
 }
 
 body{
@@ -254,7 +250,6 @@ border-radius: 8px;
 width: 100%;
 height: 290px;
 cursor: pointer;
-touch-action: manipulation; /* Evita zoom e atraso no toque do celular */
 }
 
 @media (max-width: 1024px) {
@@ -381,9 +376,7 @@ let score = 0;
 let gameOver = false;
 let gameStarted = false;
 
-function pularDino(e) {
-    if (e) e.preventDefault();
-
+function acaoJogar() {
     if (gameOver) {
         dino.y = 200;
         dino.vy = 0;
@@ -404,9 +397,21 @@ function pularDino(e) {
     }
 }
 
-// Vincula o toque instantâneo e o clique do mouse diretamente no canvas
-dCanvas.addEventListener('touchstart', pularDino, { passive: false });
-dCanvas.addEventListener('mousedown', pularDino);
+// Eventos limpos para clique na tela, toque e barra de espaço
+dCanvas.addEventListener('click', acaoJogar);
+dCanvas.addEventListener('touchstart', (e) => {
+    acaoJogar();
+});
+
+window.addEventListener('keydown', (e) => {
+    // Se o usuário estiver digitando no chat, não interfere no jogo
+    if (document.activeElement.tagName === 'INPUT') return;
+    
+    if (e.code === 'Space') {
+        e.preventDefault();
+        acaoJogar();
+    }
+});
 
 function atualizarDino() {
     if (!gameStarted || gameOver) return;
@@ -466,14 +471,14 @@ function desenharDino() {
     if (!gameStarted) {
         dCtx.fillStyle = "#ff69b4";
         dCtx.font = "13px Arial";
-        dCtx.fillText("Toque na tela para iniciar!", 55, 120);
+        dCtx.fillText("Toque ou Espaço para iniciar!", 40, 120);
     } else if (gameOver) {
         dCtx.fillStyle = "#ff1493";
         dCtx.font = "bold 18px Arial";
         dCtx.fillText("GAME OVER OTÁRIO!", 35, 110);
         dCtx.fillStyle = "#fff";
         dCtx.font = "12px Arial";
-        dCtx.fillText("Toque para reiniciar", 75, 140);
+        dCtx.fillText("Toque ou Espaço para reiniciar", 35, 140);
     }
 }
 
