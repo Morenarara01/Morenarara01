@@ -316,7 +316,7 @@ body {
 
 <body>
 
-<!-- Efeito Matrix com "MORENA RARA" -->
+<!-- Efeito Matrix Rosa -->
 <canvas id="bg"></canvas>
 
 <!-- Player Nativo com a música nova -->
@@ -373,7 +373,7 @@ body {
 </div>
 
 <script>
-// Efeito Matrix personalizado com "MORENA RARA" caindo
+// Efeito Matrix Rosa Fluido
 const canvas = document.getElementById("bg");
 const ctx = canvas.getContext("2d");
 
@@ -384,8 +384,9 @@ function resizeCanvas() {
 resizeCanvas();
 window.onresize = resizeCanvas;
 
-// Frase usada para a chuva cair letra por letra
-const textPhrase = "MORENA RARA ";
+const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+const alphabet = katakana + latin;
 
 const fontSize = 16;
 let columns = canvas.width / fontSize;
@@ -399,8 +400,7 @@ function drawMatrix() {
     ctx.font = fontSize + 'px monospace';
 
     for (let i = 0; i < rainDrops.length; i++) {
-        // Pega uma letra da frase sequencialmente ou de forma aleatória baseada na linha
-        const text = textPhrase.charAt(Math.floor(Math.random() * textPhrase.length));
+        const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
         ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
 
         if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
